@@ -2,7 +2,7 @@
 
 Boilerplate authentication for FastAPI.
 
-**Create secret key**
+**Create secret key**  
 The secret key is used to hash passwords. Start a Python shell and run the following to generate a new key:
 
 ```
