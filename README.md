@@ -1,6 +1,6 @@
 # FastAPI Auth
 
-Authentication boilerplate for FastAPI.
+FastAPI authentication boilerplate using OAuth 2 and JWT.
 
 **Create secret key**  
 The secret key is used to hash passwords. Start a Python shell and run the following to generate a new key:
