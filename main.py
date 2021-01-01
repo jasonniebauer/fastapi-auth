@@ -13,8 +13,27 @@ ALGORITHM = config("algorithm")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(config("access_token_expire_minutes"))
 
 
-fake_users_db = {
-    "johndoe": {
+# fake_users_db_old = {
+#     "johndoe": {
+#         "id": 1,
+#         "username": "johndoe",
+#         "full_name": "John Doe",
+#         "email": "johndoe@example.com",
+#         "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
+#         "disabled": False,
+#     },
+#     "devtester": {
+#         "id": 2,
+#         "username": "devtester",
+#         "full_name": "John Smith",
+#         "email": "text@example.com",
+#         "hashed_password": "$2b$12$bpyWBSP8O5f9PEGd3HnWnul/t/mlQF9Uh89EJKWEzrHHF4kNu2Ava",
+#         "disabled": False,
+#     }
+# }
+
+fake_users_db = [
+    {
         "id": 1,
         "username": "johndoe",
         "full_name": "John Doe",
@@ -22,7 +41,7 @@ fake_users_db = {
         "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
         "disabled": False,
     },
-    "devtester": {
+    {
         "id": 2,
         "username": "devtester",
         "full_name": "John Smith",
@@ -30,7 +49,7 @@ fake_users_db = {
         "hashed_password": "$2b$12$bpyWBSP8O5f9PEGd3HnWnul/t/mlQF9Uh89EJKWEzrHHF4kNu2Ava",
         "disabled": False,
     }
-}
+]
 
 
 class Token(BaseModel):
@@ -70,13 +89,14 @@ def get_password_hash(password):
 
 
 def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+    # REPLACE WITH CALL TO DATABASE TO GET USER BY USERNAME
+    for user in db:
+        if user['username'] == username:
+            return UserInDB(**user)
 
 
 def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
+    user = get_user(fake_users_db, username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -127,7 +147,7 @@ def check_username_exists(username: str) -> bool:
 
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(fake_db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
