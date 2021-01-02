@@ -183,12 +183,6 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)) -
     return current_user
 
 
-@app.get("/users/me/items/")
-async def read_own_items(current_user: User = Depends(get_current_active_user)) -> list:
-    """Function to retrieve items for current active user."""
-    return [{"item_id": "Foo", "owner": current_user.username}]
-
-
 @app.get("/users/{id}", response_model=User)
 async def get_user_by_id(id: int) -> dict:
     """Function to retrieve user by ID."""
