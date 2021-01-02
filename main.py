@@ -128,7 +128,7 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     return current_user
 
 
-def check_username_exists(username: str) -> bool:
+def check_username(username: str) -> bool:
     """Function to check if username exists in database."""
     for user in fake_users_db:  # REPLACE WITH DATABASE QUERY
         if user["username"] == username:
@@ -159,7 +159,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @app.post("/user", dependencies=[Depends(get_current_active_user)])
 async def create_user(user: User) -> dict:
     """Function to create new user in database."""
-    if check_username_exists(user.username):
+    if check_username(user.username):
         return {
             "error": "That username is already taken."
         }
