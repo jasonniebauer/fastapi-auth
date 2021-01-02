@@ -71,16 +71,16 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def get_user(db, username: str):
+def get_user(username: str):
     """Function to retrieve user from database."""
-    for user in db:
+    for user in fake_users_db:  # REPLACE WITH DATABASE QUERY
         if user["username"] == username:
             return UserInDB(**user)
 
 
-def authenticate_user(fake_db, username: str, password: str):
+def authenticate_user(username: str, password: str):
     """Function to check if username exists and passwords match."""
-    user = get_user(fake_users_db, username)
+    user = get_user(username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -115,7 +115,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
+    user = get_user(username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
@@ -130,8 +130,7 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 
 def check_username_exists(username: str) -> bool:
     """Function to check if username exists in database."""
-    # REPLACE WITH DATABASE QUERY
-    for user in fake_users_db:
+    for user in fake_users_db:  # REPLACE WITH DATABASE QUERY
         if user["username"] == username:
             return True
     return False
@@ -140,7 +139,7 @@ def check_username_exists(username: str) -> bool:
 @app.post("/api/v1/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
     """Function to authenticate user and provide access token."""
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -165,13 +164,13 @@ async def create_user(user: User) -> dict:
             "error": "That username is already taken."
         }
 
+    # REPLACE WITH DATABASE INSERT
     user_dict = user.dict()
     user_dict.update({
         "hashed_password": get_password_hash("secret123")
     })
 
-    # REPLACE WITH DATABASE INSERT
-    fake_users_db.append(user_dict)
+    fake_users_db.append(user_dict)  # REPLACE WITH DATABASE INSERT
 
     return {
         "data": "User created successfully."
@@ -193,8 +192,7 @@ async def read_own_items(current_user: User = Depends(get_current_active_user)) 
 @app.get("/users/{id}")
 async def read_users_me(id: int) -> dict:
     """Function to retrieve user by ID."""
-    # REPLACE WITH DATABASE QUERY
-    for user in fake_users_db:
+    for user in fake_users_db:  # REPLACE WITH DATABASE QUERY
         if user["id"] == id:
             return {
                 "data": user
