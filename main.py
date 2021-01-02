@@ -189,9 +189,10 @@ async def get_user_by_id(id: int) -> dict:
         if user["id"] == id:
             return User(**user)
     
-    return {
-        "error": "No user exists with the supplied ID."
-    }
+    raise HTTPException(
+        status_code=404,
+        detail="No user exists with the supplied ID.",
+    )
 
 
 @app.get("/users/check/{username}")
