@@ -137,7 +137,7 @@ def check_username_exists(username: str) -> bool:
     return False
 
 
-@app.post("/api/v1/token")
+@app.post("/api/v1/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
     """Function to authenticate user and provide access token."""
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
