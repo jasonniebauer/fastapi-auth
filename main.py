@@ -28,7 +28,7 @@ fake_users_db = [
         "full_name": "Jane Smith",
         "email": "janesmith@example.com",
         "hashed_password": "$2b$12$bpyWBSP8O5f9PEGd3HnWnul/t/mlQF9Uh89EJKWEzrHHF4kNu2Ava",  # secret123
-        "disabled": False,
+        "disabled": True,
     }
 ]
 
