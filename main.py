@@ -13,25 +13,6 @@ ALGORITHM = config("algorithm")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(config("access_token_expire_minutes"))
 
 
-# fake_users_db_old = {
-#     "johndoe": {
-#         "id": 1,
-#         "username": "johndoe",
-#         "full_name": "John Doe",
-#         "email": "johndoe@example.com",
-#         "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-#         "disabled": False,
-#     },
-#     "devtester": {
-#         "id": 2,
-#         "username": "devtester",
-#         "full_name": "John Smith",
-#         "email": "text@example.com",
-#         "hashed_password": "$2b$12$bpyWBSP8O5f9PEGd3HnWnul/t/mlQF9Uh89EJKWEzrHHF4kNu2Ava",
-#         "disabled": False,
-#     }
-# }
-
 fake_users_db = [
     {
         "id": 1,
@@ -93,7 +74,7 @@ def get_password_hash(password):
 def get_user(db, username: str):
     """Function to retrieve user from database."""
     for user in db:
-        if user['username'] == username:
+        if user["username"] == username:
             return UserInDB(**user)
 
 
@@ -149,13 +130,17 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 
 def check_username_exists(username: str) -> bool:
     """Function to check if username exists in database."""
-    return fake_users_db.get(username)
+    # REPLACE WITH DATABASE QUERY
+    for user in fake_users_db:
+        if user["username"] == username:
+            return True
+    return False
 
 
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
     """Function to authenticate user and provide access token."""
-    user = authenticate_user(fake_db, form_data.username, form_data.password)
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -185,11 +170,8 @@ async def create_user(user: User) -> dict:
         "hashed_password": get_password_hash("secret123")
     })
 
-    # Replace with database call
-    fake_users_db.update({
-        user.username: user_dict
-    })
-    print("=>", fake_users_db)
+    # REPLACE WITH DATABASE INSERT
+    fake_users_db.append(user_dict)
 
     return {
         "data": "User created successfully."
@@ -211,10 +193,11 @@ async def read_own_items(current_user: User = Depends(get_current_active_user)) 
 @app.get("/users/{id}")
 async def read_users_me(id: int) -> dict:
     """Function to retrieve user by ID."""
-    for username, user_details in fake_users_db.items():
-        if user_details["id"] == id:
+    # REPLACE WITH DATABASE QUERY
+    for user in fake_users_db:
+        if user["id"] == id:
             return {
-                "data": user_details
+                "data": user
             }
     
     return {
