@@ -56,7 +56,7 @@ class UserInDB(User):
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")  # api/v1/token
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/token")
 
 app = FastAPI()
 
@@ -137,7 +137,7 @@ def check_username_exists(username: str) -> bool:
     return False
 
 
-@app.post("/token")
+@app.post("/api/v1/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
     """Function to authenticate user and provide access token."""
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
