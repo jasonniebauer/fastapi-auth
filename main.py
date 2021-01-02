@@ -152,9 +152,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 async def create_user(user: User) -> dict:
     """Function to create new user in database."""
     if get_user(user.username):
-        return {
-            "error": "That username is already taken."
-        }
+        raise HTTPException(
+            status_code=400,
+            detail="That username is already taken.",
+        )
 
     try:
         # REPLACE WITH DATABASE INSERT
@@ -169,9 +170,10 @@ async def create_user(user: User) -> dict:
             "data": "User created successfully."
         }
     except:
-        return {
-            "error": "Something went wrong. Please try again."
-        }
+        raise HTTPException(
+            status_code=500,
+            detail="Something went wrong. Please try again.",
+        )
 
 
 @app.get("/users/me", response_model=User)
