@@ -156,17 +156,22 @@ async def create_user(user: User) -> dict:
             "error": "That username is already taken."
         }
 
-    # REPLACE WITH DATABASE INSERT
-    user_dict = user.dict()
-    user_dict.update({
-        "hashed_password": get_password_hash("secret123")
-    })
+    try:
+        # REPLACE WITH DATABASE INSERT
+        user_dict = user.dict()
+        user_dict.update({
+            "hashed_password": get_password_hash("secret123")
+        })
 
-    fake_users_db.append(user_dict)  # REPLACE WITH DATABASE INSERT
+        fake_users_db.append(user_dict)
 
-    return {
-        "data": "User created successfully."
-    }
+        return {
+            "data": "User created successfully."
+        }
+    except:
+        return {
+            "error": "Something went wrong. Please try again."
+        }
 
 
 @app.get("/users/me", response_model=User)
