@@ -189,15 +189,13 @@ async def read_own_items(current_user: User = Depends(get_current_active_user)) 
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 
-@app.get("/users/{id}")
-async def read_users_me(id: int) -> dict:
+@app.get("/users/{id}", response_model=User)
+async def get_user_by_id(id: int) -> dict:
     """Function to retrieve user by ID."""
     for user in fake_users_db:  # REPLACE WITH DATABASE QUERY
         if user["id"] == id:
-            return {
-                "data": user
-            }
+            return User(**user)
     
     return {
-        "error": "No user with the supplied ID."
+        "error": "No user exists with the supplied ID."
     }
