@@ -19,15 +19,15 @@ fake_users_db = [
         "username": "johndoe",
         "full_name": "John Doe",
         "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
+        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",  # secret
         "disabled": False,
     },
     {
         "id": 2,
-        "username": "devtester",
-        "full_name": "John Smith",
-        "email": "text@example.com",
-        "hashed_password": "$2b$12$bpyWBSP8O5f9PEGd3HnWnul/t/mlQF9Uh89EJKWEzrHHF4kNu2Ava",
+        "username": "janesmith",
+        "full_name": "Jane Smith",
+        "email": "janesmith@example.com",
+        "hashed_password": "$2b$12$bpyWBSP8O5f9PEGd3HnWnul/t/mlQF9Uh89EJKWEzrHHF4kNu2Ava",  # secret123
         "disabled": False,
     }
 ]
