@@ -26,4 +26,4 @@ uvicorn main:app --reload
 ```
 
 **API Docs**
-View documentation on API endpoints at `http://127.0.0.1:8000/docs`
+View API endpoint documentation at `http://127.0.0.1:8000/docs`
