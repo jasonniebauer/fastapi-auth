@@ -200,6 +200,9 @@ async def check_username(username: str) -> dict:
     """Function to check if username exists in database."""
     if get_user(username):
         return {
-            "data": True
+            "detail": True
         }
-    return { "data": False }
+    raise HTTPException(
+        status_code=400,
+        detail="Username does not exist.",
+    )
