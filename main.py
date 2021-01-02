@@ -148,7 +148,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.post("/user", dependencies=[Depends(get_current_active_user)])
+@app.post("/user", dependencies=[Depends(get_current_active_user)], status_code=status.HTTP_201_CREATED)
 async def create_user(user: User) -> dict:
     """Function to create new user in database."""
     if get_user(user.username):
