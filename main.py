@@ -128,14 +128,6 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     return current_user
 
 
-def check_username(username: str) -> bool:
-    """Function to check if username exists in database."""
-    for user in fake_users_db:  # REPLACE WITH DATABASE QUERY
-        if user["username"] == username:
-            return True
-    return False
-
-
 @app.post("/api/v1/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
     """Function to authenticate user and provide access token."""
@@ -159,7 +151,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @app.post("/user", dependencies=[Depends(get_current_active_user)])
 async def create_user(user: User) -> dict:
     """Function to create new user in database."""
-    if check_username(user.username):
+    if get_user(user.username):
         return {
             "error": "That username is already taken."
         }
@@ -193,3 +185,13 @@ async def get_user_by_id(id: int) -> dict:
     return {
         "error": "No user exists with the supplied ID."
     }
+
+
+@app.get("/users/check/{username}")
+async def check_username(username: str) -> dict:
+    """Function to check if username exists in database."""
+    if get_user(username):
+        return {
+            "data": True
+        }
+    return { "data": False }
