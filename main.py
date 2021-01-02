@@ -81,21 +81,24 @@ app = FastAPI()
 
 
 def verify_password(plain_password, hashed_password):
+    """Function to compare plaintext password and hashed password."""
     return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password):
+    """Function to hash password."""
     return pwd_context.hash(password)
 
 
 def get_user(db, username: str):
-    # REPLACE WITH CALL TO DATABASE TO GET USER BY USERNAME
+    """Function to retrieve user from database."""
     for user in db:
         if user['username'] == username:
             return UserInDB(**user)
 
 
 def authenticate_user(fake_db, username: str, password: str):
+    """Function to check if username exists and passwords match."""
     user = get_user(fake_users_db, username)
     if not user:
         return False
@@ -105,6 +108,7 @@ def authenticate_user(fake_db, username: str, password: str):
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    """Function to create access token."""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -116,6 +120,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
+    """Function to check if current user is authenticated."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -136,17 +141,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)) -> dict:
+    """Function to retrieve current active user."""
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
 
 def check_username_exists(username: str) -> bool:
+    """Function to check if username exists in database."""
     return fake_users_db.get(username)
 
 
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
+    """Function to authenticate user and provide access token."""
     user = authenticate_user(fake_db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -166,6 +174,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 @app.post("/user", dependencies=[Depends(get_current_active_user)])
 async def create_user(user: User) -> dict:
+    """Function to create new user in database."""
     if check_username_exists(user.username):
         return {
             "error": "That username is already taken."
@@ -189,16 +198,19 @@ async def create_user(user: User) -> dict:
 
 @app.get("/users/me", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_active_user)) -> dict:
+    """Function to retrieve details for current active user."""
     return current_user
 
 
 @app.get("/users/me/items/")
 async def read_own_items(current_user: User = Depends(get_current_active_user)) -> list:
+    """Function to retrieve items for current active user."""
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 
 @app.get("/users/{id}")
-async def read_users_me(id: int) -> dict:    
+async def read_users_me(id: int) -> dict:
+    """Function to retrieve user by ID."""
     for username, user_details in fake_users_db.items():
         if user_details["id"] == id:
             return {
