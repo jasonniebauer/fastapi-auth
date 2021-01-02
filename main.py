@@ -183,7 +183,7 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)) -
     return current_user
 
 
-@app.get("/users/{id}", response_model=User)
+@app.get("/users/{id}", dependencies=[Depends(get_current_active_user)], response_model=User)
 async def get_user_by_id(id: int) -> dict:
     """Function to retrieve user by ID."""
     for user in fake_users_db:  # REPLACE WITH DATABASE QUERY
