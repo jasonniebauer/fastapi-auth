@@ -212,11 +212,12 @@ async def get_user_by_id(id: int) -> dict:
 @app.get("/users/validate/{username}")
 async def validate_username(username: str) -> dict:
     """Function to check if username exists in database."""
-    if get_user(username):
-        return {
-            "detail": True
-        }
-    raise HTTPException(
-        status_code=400,
-        detail="Username does not exist.",
-    )
+    try:
+        if get_user(username):
+            return { "detail": True }
+        return { "detail": False }
+    except:
+        raise HTTPException(
+            status_code=400,
+            detail="Something went wrong. Please try again.",
+        )
