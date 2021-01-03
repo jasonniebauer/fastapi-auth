@@ -218,6 +218,6 @@ async def validate_username(username: str) -> bool:
         return False
     except:
         raise HTTPException(
-            status_code=400,
+            status_code=500,
             detail="Something went wrong. Please try again.",
         )
