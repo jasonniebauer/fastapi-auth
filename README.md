@@ -25,5 +25,5 @@ Replace the secret_key in `.env` with the string generated.
 uvicorn main:app --reload
 ```
 
-**API Docs**
+**API Docs**  
 View API endpoint documentation at `http://127.0.0.1:8000/docs`
