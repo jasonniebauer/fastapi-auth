@@ -195,8 +195,8 @@ async def get_user_by_id(id: int) -> dict:
     )
 
 
-@app.get("/users/check/{username}")
-async def check_username(username: str) -> dict:
+@app.get("/users/validate/{username}")
+async def validate_username(username: str) -> dict:
     """Function to check if username exists in database."""
     if get_user(username):
         return {
